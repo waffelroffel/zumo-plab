@@ -1,7 +1,9 @@
 //Test av kjoring i ring for å finne target
 
-#define echoPin 2 // Echo Pin
-#define trigPin 3 // Trigger Pin
+#define echoPinRight 2 // Right Echo Pin
+#define trigPinRight 3 // Right Trigger Pin
+#define echoPinLeft A1 // Left Echo Pin
+#define trigPinLeft 6 // Left Trigger Pin
 #include <ZumoMotors.h>
 #include <Pushbutton.h>
 ZumoMotors motors;
@@ -14,15 +16,14 @@ const int MAX_SPEED = 400;
 
 //Variabler for avstandsmåling
 long duration, distance;
-long distanceToObject;
-int maximumRange = 200;
-int minimumRange = 0;
 int number = 3;
 int between = 3;
 
 void setup() {
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  pinMode(trigPinRight, OUTPUT);
+  pinMode(echoPinRight, INPUT);
+  pinMode(trigPinLeft, OUTPUT);
+  pinMode(echoPinLeft, INPUT);
   button.waitForButton();
   motors.setSpeeds(400,-400);
   searchMode();
@@ -36,42 +37,24 @@ void loop() {
 }
 void searchMode(){
   motors.setSpeeds(400,-400);
-  while (getDistance(number,between)>20){
+  while (getDistance(trigPinLeft, echoPinLeft)>20){
     continue;
   }
   motors.setSpeeds(400,400);
   return;
 }
 
-long getDistance(int number, int between){
-  int i = 0;
-  long currentdist = 200;
-  while (i < number) {
-    digitalWrite(trigPin, LOW);
-    delayMicroseconds(2);
+long getDistance(int trig,int echo){
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
 
-    digitalWrite(trigPin, HIGH);
-    delayMicroseconds(10);
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
 
-    digitalWrite(trigPin, LOW);
-    duration = pulseIn(echoPin, HIGH);
+  digitalWrite(trig, LOW);
+  duration = pulseIn(echo, HIGH);
 
-    //Calculate the distance (in cm) based on the speed of sound.
-    distance = duration / 58.2;
-    if (distance < currentdist) {
-      if (distance >= maximumRange){
-        continue;
-      }
-      else if (distance <= minimumRange){
-        continue;
-      }
-      else{
-        currentdist = distance;
-      }
-    }
-    i++;
-    delay(between);
-  }
-  return currentdist;
+  //Calculate the distance (in cm) based on the speed of sound.
+  distance = duration / 58.2;
+  return distance;
 }
-
