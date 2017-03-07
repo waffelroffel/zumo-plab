@@ -1,0 +1,3 @@
+void setDefenceMode() {
+  motors.setSpeeds(400, 200);
+}
