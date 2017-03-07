@@ -31,16 +31,58 @@ void setup() {
 }
 
 void loop() {
-  delay(2000);
-  motors.setSpeeds(0,0);
+  chaseMode(400,400);
 
 }
 void searchMode(){
   motors.setSpeeds(400,-400);
-  while (getDistance(trigPinLeft, echoPinLeft)>20){
+  while (getDistance(trigPinLeft, echoPinLeft)>40){
     continue;
   }
   motors.setSpeeds(400,400);
+  chaseMode(400,400);
+  return;
+}
+
+void chaseRightMode(int leftSpeed,int rightSpeed){
+  if (getDistance(trigPinLeft, echoPinLeft)>50){
+    rightSpeed-= 30;
+    motors.setSpeeds(leftSpeed, rightSpeed);
+  }
+  else{
+    chaseMode(400,400);
+  }
+  if (getDistance(trigPinRight, echoPinRight)>50){
+    searchMode();
+  }
+  return;
+}
+
+void chaseLeftMode(int leftSpeed,int rightSpeed){
+  if (getDistance(trigPinLeft, echoPinLeft)>50){
+    leftSpeed -= 30;
+    motors.setSpeeds(leftSpeed, rightSpeed);
+  }
+  else{
+    chaseMode(400,400);
+  }
+  if (getDistance(trigPinLeft, echoPinLeft)>50){
+    chaseMode(400,400);
+  }
+  return;
+}
+
+void chaseMode(int leftSpeed,int rightSpeed){
+  if (getDistance(trigPinLeft, echoPinLeft)>50){
+    rightSpeed -= 30;
+    motors.setSpeeds(leftSpeed,rightSpeed);
+    chaseRightMode(leftSpeed,rightSpeed);
+  }
+  else if  (getDistance(trigPinRight, echoPinRight)>50){
+    leftSpeed -= 30;
+    motors.setSpeeds(leftSpeed,rightSpeed);
+    chaseLeftMode(leftSpeed,rightSpeed);
+  }
   return;
 }
 
