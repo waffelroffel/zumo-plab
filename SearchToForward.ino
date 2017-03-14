@@ -6,6 +6,7 @@
 #define trigPinLeft 6 // Left Trigger Pin
 #include <ZumoMotors.h>
 #include <Pushbutton.h>
+#include <NewPing.h>
 ZumoMotors motors;
 Pushbutton button(ZUMO_BUTTON);
 
@@ -18,12 +19,11 @@ const int MAX_SPEED = 400;
 long duration, distance;
 int number = 3;
 int between = 3;
+long maxDistance = 50;
+NewPing rightSonar(trigPinRight, trigPinRight, maxDistance);
+NewPing leftSonar(trigPinLeft, trigPinLeft, maxDistance);
 
 void setup() {
-  pinMode(trigPinRight, OUTPUT);
-  pinMode(echoPinRight, INPUT);
-  pinMode(trigPinLeft, OUTPUT);
-  pinMode(echoPinLeft, INPUT);
   button.waitForButton();
   motors.setSpeeds(400,-400);
   searchMode();
@@ -31,12 +31,12 @@ void setup() {
 }
 
 void loop() {
-  chaseMode(400,400);
+  searchMode();
 
 }
 void searchMode(){
   motors.setSpeeds(400,-400);
-  while (getDistance(trigPinLeft, echoPinLeft)>40){
+  while (getDistance(leftSonar)>maxDistance-10){
     continue;
   }
   motors.setSpeeds(400,400);
@@ -45,40 +45,40 @@ void searchMode(){
 }
 
 void chaseRightMode(int leftSpeed,int rightSpeed){
-  if (getDistance(trigPinLeft, echoPinLeft)>50){
+  if (getDistance(leftSonar)>maxDistance){
     rightSpeed-= 30;
     motors.setSpeeds(leftSpeed, rightSpeed);
   }
   else{
     chaseMode(400,400);
   }
-  if (getDistance(trigPinRight, echoPinRight)>50){
+  if (getDistance(rightSonar)>50){
     searchMode();
   }
   return;
 }
 
 void chaseLeftMode(int leftSpeed,int rightSpeed){
-  if (getDistance(trigPinLeft, echoPinLeft)>50){
+  if (getDistance(rightSonar)>50){
     leftSpeed -= 30;
     motors.setSpeeds(leftSpeed, rightSpeed);
   }
   else{
     chaseMode(400,400);
   }
-  if (getDistance(trigPinLeft, echoPinLeft)>50){
+  if (getDistance(leftSonar)>50){
     chaseMode(400,400);
   }
   return;
 }
 
 void chaseMode(int leftSpeed,int rightSpeed){
-  if (getDistance(trigPinLeft, echoPinLeft)>50){
+  if (getDistance(leftSonar)>50){
     rightSpeed -= 30;
     motors.setSpeeds(leftSpeed,rightSpeed);
     chaseRightMode(leftSpeed,rightSpeed);
   }
-  else if  (getDistance(trigPinRight, echoPinRight)>50){
+  else if  (getDistance(rightSonar)>maxDistance){
     leftSpeed -= 30;
     motors.setSpeeds(leftSpeed,rightSpeed);
     chaseLeftMode(leftSpeed,rightSpeed);
@@ -86,17 +86,6 @@ void chaseMode(int leftSpeed,int rightSpeed){
   return;
 }
 
-long getDistance(int trig,int echo){
-  digitalWrite(trig, LOW);
-  delayMicroseconds(2);
-
-  digitalWrite(trig, HIGH);
-  delayMicroseconds(10);
-
-  digitalWrite(trig, LOW);
-  duration = pulseIn(echo, HIGH);
-
-  //Calculate the distance (in cm) based on the speed of sound.
-  distance = duration / 58.2;
-  return distance;
+long getDistance(NewPing sonar){
+  return sonar.ping_cm();
 }
