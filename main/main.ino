@@ -15,7 +15,10 @@ int state;
 
 void setup() {
     // SETUP AND MANOUVER TO MIDDLE
-
+    sensors.init();
+    motors.setSpeeds(400,120);
+    delay(750);
+    motors.setSpeeds(0,0);
 }
 
 void loop() {

@@ -22,15 +22,20 @@ ZumoReflectanceSensorArray sensors;
 void setup(){
   sensors.init();
   motors.setSpeeds(400,400);
-  button.waitForButton();
 }
 
 void loop(){
+  avoidLine();
+}
+
+void avoidLine(){
   sensors.read(sensor_values);
   if(sensor_values[0] < QTR_THRESHOLD){
-    plab_Motors.turnRight(TURN_SPEED,60);
+    motors.setSpeeds(FORWARD_SPEED, 300);
+    delay(100);
   }else if(sensor_values[5] < QTR_THRESHOLD){
-    plab_Motors.turnLeft(TURN_SPEED,60);
+    motors.setSpeeds(300, FORWARD_SPEED);
+    delay(100);
   }else{
     motors.setSpeeds(FORWARD_SPEED, FORWARD_SPEED);
   }
