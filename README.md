@@ -8,9 +8,13 @@
 <b>AVTALTE FUNKSJONER OG GLOBALE VARIABLER:</b>
 
 <b>FUKSJONER: </b>
+
 void updateSpeeds(int left, int right); // setter motorkraft, og endrer globale var
 
 <b>GLOBALE-VARIABLER:</b>
+
 // current hastighet på høyre og venstre motor (endres kun av updateSpeeds)
+
 int right_speed;
+
 int right_speed;
