@@ -56,26 +56,27 @@ int right_motor;
 
 void setup()
 {
-    btSerial.begin(9600);
+    //btSerial.begin(9600);
     Serial.begin(9600);
     button.waitForButton();
     Wire.begin();
     compass.init();
     compass.enableDefault();
-    calibrateAccel();
-
+    //calibrateAccel();
 }
 
 void loop()
 {
   compass.read();
 
+  motors.setSpeeds(400, 400);
   snprintf(report, sizeof(report), "A: %6d %6d %6d    M: %6d %6d %6d",
     compass.a.x, compass.a.y, compass.a.z,
     compass.m.x, compass.m.y, compass.m.z);
-  btSerial.println(report);
+
+  //btSerial.println(report);
   Serial.println(report);
-  detectCrash(compass.a.x, compass.a.y, compass.a.z);
+  //detectCrash(compass.a.x, compass.a.y, compass.a.z);
 
   delay(100);
 }
@@ -88,6 +89,14 @@ void calibrateAccel() {
 }
 
 void detectCrash(int x, int y, int z) {
+// I RO:
+// x = -100 (5k dytt) (10k+ 400)
+// y = -130 (5k dytt)
+// z = 17200
 
+// FREMOVER = POSITIV X
+// BAKOVER = NEGATIV X
+// HOYRE = NEGATIV Y
+// VENSTRE = POSITV Y
 
 }
