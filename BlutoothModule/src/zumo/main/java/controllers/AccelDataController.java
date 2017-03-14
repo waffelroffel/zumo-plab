@@ -15,5 +15,10 @@ public class AccelDataController {
 	public void messageRecieved(String message, int value) {
 		System.out.println(message);
 	}
+	
+	public static void main(String[] args) {
+		AccelDataController adc = new AccelDataController();
+		
+	}
 
 }
