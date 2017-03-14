@@ -32,6 +32,7 @@ at this FS setting, so the value of -1009 corresponds to -1009 * 1 =
 #include <ZumoMotors.h>
 #include <Pushbutton.h>
 #include <NewPing.h>
+#include <SoftwareSerial.h>
 
 const int txPin = 7;
 const int rxPin = 6;
@@ -45,13 +46,24 @@ LSM303 compass;
 
 char report[80];
 
+// CALIBRATED ACCALERATION
+int CALIBRATED_X = 0;
+int CALIBRATED_Y = 0;
+int CALIBRATED_Z = 0;
+
+int left_motor;
+int right_motor;
+
 void setup()
 {
     btSerial.begin(9600);
+    Serial.begin(9600);
     button.waitForButton();
     Wire.begin();
     compass.init();
     compass.enableDefault();
+    calibrateAccel();
+
 }
 
 void loop()
@@ -62,6 +74,20 @@ void loop()
     compass.a.x, compass.a.y, compass.a.z,
     compass.m.x, compass.m.y, compass.m.z);
   btSerial.println(report);
+  Serial.println(report);
+  detectCrash(compass.a.x, compass.a.y, compass.a.z);
 
   delay(100);
+}
+
+void calibrateAccel() {
+    // calibrate accel
+    CALIBRATED_X = compass.a.x;
+    CALIBRATED_Y = compass.a.y;
+    CALIBRATED_Z = compass.a.z;
+}
+
+void detectCrash(int x, int y, int z) {
+
+
 }
