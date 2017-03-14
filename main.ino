@@ -3,28 +3,42 @@
 #include <PLabBTSerial.h>
 #include <Pushbutton.h>
 
-ZumoMotors motors;
-Pushbutton button(ZUMO_BUTTON);
-
 const int MAX_SPEED = 400;
 
+// DEFINE STATES
 int state;
-// tilstander: 
-// 0 = før start
-// 1 = søk
-// 2 = angrep
-// 3 = forsvar
-
+#define SEARCH 0;
+#define ATTACK 1;
+#define DEFENCE 2;
+#define RETURN 3;
 
 
 void setup() {
-  state = 0;
-  button.waitForButton();
-  
-  
-  
+    // SETUP AND MANOUVER TO MIDDLE
+
 }
 
 void loop() {
+
+    // **ALL** SENSOR INPUT AND CALCULATIONS
+
+    // DECIDE STATE BASED ON SENSOR INPUT
+
+    // SWITCH-CASE
+    switch (state) {
+        case SEARCH:
+            // SEARCH LOGIC
+            break;
+        case ATTACK:
+            // ATTACK LOGIC
+            break;
+        case DEFENCE:
+            // DEFENCE LOGIC
+            break;
+        case RETURN:
+            // RETURN LOGIC
+            break;
+        }
+    }
 
 }
