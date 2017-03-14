@@ -28,6 +28,18 @@ at this FS setting, so the value of -1009 corresponds to -1009 * 1 =
 
 #include <Wire.h>
 #include <LSM303.h>
+#include <PLabBTSerial.h>
+#include <ZumoMotors.h>
+#include <Pushbutton.h>
+#include <NewPing.h>
+
+const int txPin = 7;
+const int rxPin = 6;
+
+ZumoMotors motors;
+Pushbutton button(ZUMO_BUTTON);
+
+PLabBTSerial btSerial(txPin, rxPin);
 
 LSM303 compass;
 
@@ -35,10 +47,11 @@ char report[80];
 
 void setup()
 {
-  Serial.begin(9600);
-  Wire.begin();
-  compass.init();
-  compass.enableDefault();
+    btSerial.begin(9600);
+    button.waitForButton();
+    Wire.begin();
+    compass.init();
+    compass.enableDefault();
 }
 
 void loop()
@@ -48,7 +61,7 @@ void loop()
   snprintf(report, sizeof(report), "A: %6d %6d %6d    M: %6d %6d %6d",
     compass.a.x, compass.a.y, compass.a.z,
     compass.m.x, compass.m.y, compass.m.z);
-  Serial.println(report);
+  btSerial.println(report);
 
   delay(100);
 }
