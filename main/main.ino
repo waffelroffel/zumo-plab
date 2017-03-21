@@ -143,15 +143,15 @@ void calibrateAccel() {
 }
 
 void detectCrash(int x, int y, int z) {
-// I RO:
-// x = -100 (5k dytt) (10k+ 400)
-// y = -130 (5k dytt)
-// z = 17200
+	// I RO:
+	// x = -100 (5k dytt) (10k+ 400)
+	// y = -130 (5k dytt)
+	// z = 17200
 
-// FREMOVER = POSITIV X
-// BAKOVER = NEGATIV X
-// HOYRE = NEGATIV Y
-// VENSTRE = POSITV Y
+	// FREMOVER = POSITIV X
+	// BAKOVER = NEGATIV X
+	// HOYRE = NEGATIV Y
+	// VENSTRE = POSITV Y
 
     /* IF MOTORSPEEDS THE SAME THEN
     Check if accel is 0 in y and x direction - if not, then set side and
@@ -201,7 +201,7 @@ void loop() {
 	rightDistance = getDistance(rightSonar);
 	sensors.read(sensorValues);
 	detectCrash(compass.a.x, compass.a.y, compass.a.z);
-	
+
 	// DECIDE STATE BASED ON SENSOR INPUT
 	getState();
 
