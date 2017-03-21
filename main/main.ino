@@ -159,6 +159,5 @@ void loop() {
         case RETURN:
             // RETURN LOGIC
             break;
-        }
     }
 }
