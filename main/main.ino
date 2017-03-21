@@ -14,9 +14,9 @@
 // DEFINE CONSTANTS
 const int MAX_SPEED = 400;
 #define maxDistance 50
+#define NUM_SENSORS 6
 
 // DEFINE STATES
-int state;
 #define SEARCH 0;
 #define ATTACK 1;
 #define DEFENCE 2;
@@ -27,6 +27,8 @@ NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
 NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 
 // Global variables
+int state;
+int previousState;
 int leftDistance; //Distances to enemies
 int rightDistance;
 int leftSpeed; // Speeds on the wheels
@@ -34,6 +36,7 @@ int rightSpeed;
 int previousLeftSpeed;
 int previousRightSpeed;
 int side; //truffet side
+unsigned int sensorValues[NUM_SENSORS]; // Array for IR-sensors
 
 void setup() {
     // SETUP AND MANOUVER TO MIDDLE
@@ -79,7 +82,7 @@ void evasion(int side){
   }
 }
 
-void updateSpeeds(int newleftSpeed, int newRightSpeed){
+void updateSpeeds(int newLeftSpeed, int newRightSpeed){
   previousLeftSpeed = leftSpeed;
   previousRightSpeed = rightSpeed;
   leftSpeed = newleftSpeed;
@@ -101,7 +104,7 @@ void retreat() {
   // global?
   sensors.read(sensorValues);
   // if line is detected on both the leftmost and rightmost sensor, start turning around
-  if ((sensorValues[0] > QTR_THRESHOLD) && (sensorValues[5] > QTR_THRESHOLD))) {
+  if ((sensorValues[0] > QTR_THRESHOLD) && (sensorValues[5] > QTR_THRESHOLD)) {
     updateSpeeds(-300, 300)
     break;
   } else if (sensorValues[0] > QTR_THRESHOLD) {
