@@ -118,24 +118,24 @@ void retreat() {
 
 void attackMode(){
 	if (leftDistance>0 && rightDistance>0){
-		updateSpeed(400,400);
+		updateSpeeds(400,400);
 		return;
 	}
 	if 	(leftDistance>0){
 		if (previousState == 1){
-			updateSpeed(400, rightSpeed-30);
+			updateSpeeds(400, rightSpeed-30);
 		}
 		else{
-			updateSpeed(400,370);
+			updateSpeeds(400,370);
 		}
 		return;
 	}
 	if (rightDistance>0){
 		if (previousState == 1){
-			updateSpeed(leftSpeed-30,400);
+			updateSpeeds(leftSpeed-30,400);
 		}
 		else{
-			updateSpeed(370,400);
+			updateSpeeds(370,400);
 		}
 		return;
 	}
