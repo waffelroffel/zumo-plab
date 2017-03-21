@@ -196,6 +196,15 @@ void detectCrash(int x, int y, int z) {
     }
 }
 
+
+void bluetoothPrint(String message) {
+  // ikke brukt ressurser på å sende en tom melding
+  if (message.length() > 0) {
+    btSerial.print(message);
+  }
+}
+
+
 void setup() {
 	// SETUP
 	sensors.init();
