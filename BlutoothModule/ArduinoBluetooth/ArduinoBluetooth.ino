@@ -21,11 +21,14 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  int i = 0;
-  while (i < 10000) {
-    btSerial.println(i);
-    i = i + 1;
-  }
 
 }
+
+
+void bluetoothPrint(String message) {
+  // ikke brukt ressurser på å sende en tom melding
+  if (message.length() > 0) {
+    btSerial.print(message);
+  }
+}
+
