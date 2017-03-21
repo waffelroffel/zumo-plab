@@ -23,18 +23,18 @@ public:
 class Motors{
   ZumoMotors motors;
   Timer motorTimer;
-  long previousMillis, driveTime;
   int currentPriority;
 
 public:
   Motors(){
     motors.setSpeeds(0, 0);
-    motorTimer.lap(0);
     currentPriority = 0;
   }
-
+  //(left speed, right speed, duration, priority)
   void updateSpeeds(int left, int right, long seconds, int priority){
-    if(priority >= currentPriority || motorTimer.lap(seconds)){
+    bool tempe = motorTimer.lap(seconds);
+    Serial.println(tempe);
+    if(priority >= currentPriority || tempe){
       motors.setSpeeds(left, right);
       currentPriority = priority;
     }
@@ -65,11 +65,11 @@ void evade(int side){
 }
 ///////////////////////////////////
 void setup(){
+  Serial.begin(9100);
   button.waitForButton();
-  motors.updateSpeeds(100, 100, 500, 0);
+  motors.updateSpeeds(200, 100, 4500, 0);
 }
 
 void loop(){
-  motors.updateSpeeds(400, 200, 500, 1);
-  motors.updateSpeeds(0, 0, 500, 0);
+  motors.updateSpeeds(100, 200, 500, 1);
 }
