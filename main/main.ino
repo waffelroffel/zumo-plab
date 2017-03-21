@@ -60,7 +60,7 @@ void getState(){
 		stateSet = true;
 	}
 	// Blir kræsjet i
-	if (!statSet && crashDetected) {
+	if (!stateSet && crashDetected) {
 		setState(DEFENCE);
 		stateSet = true;
 	}
