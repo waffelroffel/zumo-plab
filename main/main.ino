@@ -27,7 +27,7 @@ NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
 NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 
 // Global variables
-int state;
+int state; //States of the vehicle
 int previousState;
 int leftDistance; //Distances to enemies
 int rightDistance;
@@ -123,19 +123,19 @@ void attackMode(){
 	}
 	if 	(leftDistance>0){
 		if (previousState == 1){
-			updateSpeeds(400, rightSpeed-30);
+			updateSpeeds(leftSpeed-30, 400);
 		}
 		else{
-			updateSpeeds(400,370);
+			updateSpeeds(370,400);
 		}
 		return;
 	}
 	if (rightDistance>0){
 		if (previousState == 1){
-			updateSpeeds(leftSpeed-30,400);
+			updateSpeeds(400,rightSpeed);
 		}
 		else{
-			updateSpeeds(370,400);
+			updateSpeeds(400,370);
 		}
 		return;
 	}
