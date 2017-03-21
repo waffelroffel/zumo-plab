@@ -5,6 +5,7 @@
 #include <NewPing.h>
 #include <ZumoReflectanceSensorArray.h>
 #include <LSM303.h>
+#include <Wire.h>
 
 // DEFINE PINS
 #define echoPinRight 4 // Right Echo Pin
@@ -225,20 +226,20 @@ void loop() {
 
 	// SWITCH-CASE
 	switch (state) {
-		case SEARCH: 
-			searchMode(); 
+		case SEARCH:
+			searchMode();
 			bluetoothPrint("set searchMode");
 			break;
-		case ATTACK: 
-			attackMode(); 
+		case ATTACK:
+			attackMode();
 			bluetoothPrint("set attackMode");
 			break;
-		case DEFENCE: 
+		case DEFENCE:
 			evasion();
-			bluetoothPrint("set Defence"); 
+			bluetoothPrint("set Defence");
 			break;
-		case RETURN: 
-			retreat(); 
+		case RETURN:
+			retreat();
 			bluetoothPrint("set Retreat");
 			break;
 	}
