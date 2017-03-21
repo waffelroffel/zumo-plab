@@ -58,6 +58,9 @@ void getState(){
 		stateSet = true;
 	}
 	// Alle andre eventuelle sjekker
+	if (stateSet == false){ //Dette er siste sjekken, ikke legg noe under
+		setState(0);
+		stateSet = true;
 	stateSet = false;
 }
 
@@ -130,9 +133,6 @@ void attackMode(){
 void setup() {
     // SETUP AND MANOUVER TO MIDDLE
     sensors.init();
-    motors.setSpeeds(400,120);
-    delay(750);
-    motors.setSpeeds(0,0);
 }
 
 void loop() {
