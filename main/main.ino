@@ -18,10 +18,10 @@ const int MAX_SPEED = 400;
 #define QTR_THRESHOLD 1800
 
 // DEFINE STATES
-#define SEARCH 0;
-#define ATTACK 1;
-#define DEFENCE 2;
-#define RETURN 3;
+#define SEARCH 0
+#define ATTACK 1
+#define DEFENCE 2
+#define RETURN 3
 
 // OBJECTS
 ZumoMotors motors;
@@ -97,7 +97,6 @@ void retreat() {
   // if line is detected on both the leftmost and rightmost sensor, start turning around
   if ((sensorValues[0] < QTR_THRESHOLD) && (sensorValues[5] < QTR_THRESHOLD)) {
     updateSpeeds(-300, 300);
-    break;
   } else if (sensorValues[0] < QTR_THRESHOLD) {
     // turn right
     updateSpeeds(300, 200);
