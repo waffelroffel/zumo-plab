@@ -2,8 +2,18 @@
 #include <Pushbutton.h>
 #include <PLabBTSerial.h>
 #include <Pushbutton.h>
+#include <NewPing.h>
 
+// DEFINE PINS
+#define echoPinRight 2 // Right Echo Pin
+#define trigPinRight 3 // Right Trigger Pin
+#define echoPinLeft A1 // Left Echo Pin
+#define trigPinLeft A0 // Left Trigger Pin
+
+
+// DEFINE CONSTANTS
 const int MAX_SPEED = 400;
+#define maxDistance 50
 
 // DEFINE STATES
 int state;
@@ -11,6 +21,10 @@ int state;
 #define ATTACK 1;
 #define DEFENCE 2;
 #define RETURN 3;
+
+// Variables for distance measurements
+NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
+NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 
 
 void setup() {
@@ -44,4 +58,10 @@ void loop() {
         }
     }
 
+}
+
+long getDistance(NewPing sonar){
+  Serial.println(sonar.ping_cm());
+  delay(50);
+  return sonar.ping_cm();
 }
