@@ -22,7 +22,7 @@ const int MAX_SPEED = 400;
 #define DEFENCE 2;
 #define RETURN 3;
 
-// Variables for distance measurements
+// OBJECTS
 ZumoMotors motors;
 ZumoReflectanceSensorArray sensors;
 NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
