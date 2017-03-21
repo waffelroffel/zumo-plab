@@ -5,6 +5,7 @@
 #include <NewPing.h>
 #include <ZumoReflectanceSensorArray.h>
 #include <LSM303.h>
+#include <QTRSensors.h>
 #include <Wire.h>
 
 // DEFINE PINS
@@ -62,24 +63,24 @@ void setState(int newState){
 void getState(){
 	// Treffer linja
 	if((sensorValues[0] < QTR_THRESHOLD) || (sensorValues[5] < QTR_THRESHOLD)){
-		setState(RETURN);
+		setState(3);
 		stateSet = true;
 	}
 	// Blir kræsjet i
 	if (!stateSet && crashDetected) {
-		setState(DEFENCE);
+		setState(2);
 		stateSet = true;
 	}
 
 	// Kode for å sjekke om vi blir angrepet
 	if (!stateSet && (leftDistance > 0 || rightDistance > 0)){
-		setState(ATTACK);
+		setState(1);
 		stateSet = true;
 	}
 	// Alle andre eventuelle sjekker
 
 	if (stateSet == false){ //Dette er siste sjekken, ikke legg noe under
-		setState(SEARCH);
+		setState(0);
 		stateSet = true;
 	stateSet = false;
 	}
