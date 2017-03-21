@@ -54,24 +54,32 @@ void setState(int newState){
 }
 
 void getState(){
+	// Treffer linja
 	if((sensorValues[0] < QTR_THRESHOLD) || (sensorValues[5] < QTR_THRESHOLD)){
-		setState(3);
+		setState(RETURN);
 		stateSet = true;
 	}
+	// Blir kræsjet i
+	if (!statSet && crashDetected) {
+		setState(DEFENCE);
+		stateSet = true;
+	}
+
 	// Kode for å sjekke om vi blir angrepet
 	if (!stateSet && (leftDistance > 0 || rightDistance > 0)){
-		setState(1);
+		setState(ATTACK);
 		stateSet = true;
 	}
 	// Alle andre eventuelle sjekker
+
 	if (stateSet == false){ //Dette er siste sjekken, ikke legg noe under
-		setState(0);
+		setState(SEARCH);
 		stateSet = true;
 	stateSet = false;
 	}
 }
 
-void evasion(int side){
+void evasion(){
 	switch(side){
 		case 1: updateSpeeds(-400,-100); break; //front
 		case 2: updateSpeeds(400,100); break; //back
@@ -209,7 +217,7 @@ void loop() {
 	switch (state) {
 		case SEARCH: searchMode(); break;
 		case ATTACK: attackMode(); break;
-		case DEFENCE: evasion(side); break;
+		case DEFENCE: evasion(); break;
 		case RETURN: retreat(); break;
 	}
 }
