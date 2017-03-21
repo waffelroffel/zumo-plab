@@ -7,8 +7,8 @@
 #include <LSM303.h>
 
 // DEFINE PINS
-#define echoPinRight 2 // Right Echo Pin
-#define trigPinRight 3 // Right Trigger Pin
+#define echoPinRight 4 // Right Echo Pin
+#define trigPinRight 5 // Right Trigger Pin
 #define echoPinLeft A1 // Left Echo Pin
 #define trigPinLeft A0 // Left Trigger Pin
 
@@ -61,7 +61,7 @@ void getState(){
 		stateSet = true;
 	}
 	// Blir kræsjet i
-	if (!statSet && crashDetected) {
+	if (!stateSet && crashDetected) {
 		setState(DEFENCE);
 		stateSet = true;
 	}
