@@ -236,20 +236,20 @@ void loop() {
 	// SWITCH-CASE
 	switch (state) {
 		case SEARCH:
-			searchMode();
 			bluetoothPrint("set searchMode");
+			searchMode();
 			break;
 		case ATTACK:
-			attackMode();
 			bluetoothPrint("set attackMode");
+			attackMode();
 			break;
 		case DEFENCE:
-			evasion();
 			bluetoothPrint("set Defence");
+			evasion();
 			break;
 		case RETURN:
-			retreat();
 			bluetoothPrint("set Retreat");
+			retreat();
 			break;
 	}
 }
