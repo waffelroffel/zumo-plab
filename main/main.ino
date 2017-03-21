@@ -66,6 +66,12 @@ void loop() {
 
 }
 
+void updateSpeeds(int newleftSpeed, int newRightSpeed){
+  leftSpeed = left;
+  rightSpeed = right;
+  motors.setSpeeds(leftSpeed, rightSpeed);
+}
+
 long getDistance(NewPing sonar){
   //Serial.println(sonar.ping_cm());
   return sonar.ping_cm();
@@ -74,4 +80,20 @@ long getDistance(NewPing sonar){
 void searchMode(){
   //btSerial.println("Running searchMode");
   motors.setSpeeds(400,-400);
+}
+
+void retreat() {
+  // global?
+  sensors.read(sensorValues);
+  // if line is detected on both the leftmost and rightmost sensor, start turning around
+  if ((sensorValues[0] > QTR_THRESHOLD) && (sensorValues[5] > QTR_THRESHOLD))) {
+    updateSpeeds(-300, 300)
+    break;
+  } else if (sensorValues[0] > QTR_THRESHOLD) {
+    // turn right
+    updateSpeeds(300, 200);
+  } else if (sensorValues[5] > QTR_THRESHOLD) {
+    // turn left
+    updateSpeeds(200, 300);
+  }
 }
