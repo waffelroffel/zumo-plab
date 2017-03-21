@@ -23,6 +23,7 @@ const int MAX_SPEED = 400;
 #define RETURN 3;
 
 // Variables for distance measurements
+ZumoMotors motors;
 NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
 NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 
