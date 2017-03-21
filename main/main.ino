@@ -44,7 +44,7 @@ void loop() {
     // SWITCH-CASE
     switch (state) {
         case SEARCH:
-            // SEARCH LOGIC
+            searchMode();
             break;
         case ATTACK:
             // ATTACK LOGIC
@@ -69,10 +69,4 @@ long getDistance(NewPing sonar){
 void searchMode(){
   //btSerial.println("Running searchMode");
   motors.setSpeeds(400,-400);
-  if ((getDistance(leftSonar)>(maxDistance-10)) or (getDistance(leftSonar)==0)){
-    return;
-  }
-  else{
-      pass
-      //start attackMode
 }
