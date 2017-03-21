@@ -76,6 +76,22 @@ void loop() {
 
 }
 
+void setState(int newState){
+	previousState = state;
+	state = newState;
+}
+
+void getState(){
+	// Kode for å sjekke om vi er på kanten
+	// Kode for å sjekke om vi blir angrepet
+	if (!stateSet && (leftDistance > 0 || rightDistance > 0)){
+		setState(1);
+		stateSet = true;
+	}
+	// Alle andre eventuelle sjekker
+	stateSet = false;
+}
+
 void evasion(int side){
   switch(side){
     case 1: motors.updateSpeeds(-400,-100); break; //front
