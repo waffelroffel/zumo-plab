@@ -96,7 +96,7 @@ void searchMode(){
 void retreat() {
   // if line is detected on both the leftmost and rightmost sensor, start turning around
   if ((sensorValues[0] < QTR_THRESHOLD) && (sensorValues[5] < QTR_THRESHOLD)) {
-    updateSpeeds(-300, 300)
+    updateSpeeds(-300, 300);
     break;
   } else if (sensorValues[0] < QTR_THRESHOLD) {
     // turn right
