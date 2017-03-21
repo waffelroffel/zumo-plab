@@ -3,7 +3,8 @@
 #define echoPinRight 2 // Right Echo Pin
 #define trigPinRight 3 // Right Trigger Pin
 #define echoPinLeft A1 // Left Echo Pin
-#define trigPinLeft 6 // Left Trigger Pin
+#define trigPinLeft A0 // Left Trigger Pin
+#define maxDistance 50
 #include <ZumoMotors.h>
 #include <Pushbutton.h>
 #include <NewPing.h>
@@ -16,14 +17,11 @@ const int MAX_SPEED = 400;
 
 
 //Variabler for avstandsmåling
-long duration, distance;
-int number = 3;
-int between = 3;
-long maxDistance = 50;
-NewPing rightSonar(trigPinRight, trigPinRight, maxDistance);
-NewPing leftSonar(trigPinLeft, trigPinLeft, maxDistance);
+NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
+NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 
 void setup() {
+  Serial.begin(9600);
   button.waitForButton();
   motors.setSpeeds(400,-400);
   searchMode();
@@ -31,12 +29,14 @@ void setup() {
 }
 
 void loop() {
+  Serial.println("Loop started");
   searchMode();
 
 }
 void searchMode(){
+  Serial.println("Running searchMode");
   motors.setSpeeds(400,-400);
-  while (getDistance(leftSonar)>maxDistance-10){
+  while ((getDistance(leftSonar)>(maxDistance-10)) or (getDistance(leftSonar)==0)){
     continue;
   }
   motors.setSpeeds(400,400);
@@ -45,47 +45,57 @@ void searchMode(){
 }
 
 void chaseRightMode(int leftSpeed,int rightSpeed){
-  if (getDistance(leftSonar)>maxDistance){
+  Serial.println("Running chaseRightMode");
+  if (getDistance(leftSonar)==0){
     rightSpeed-= 30;
     motors.setSpeeds(leftSpeed, rightSpeed);
+    chaseRightMode(leftSpeed,rightSpeed);
   }
   else{
     chaseMode(400,400);
   }
-  if (getDistance(rightSonar)>50){
+  if (getDistance(rightSonar)==0){
     searchMode();
   }
   return;
 }
 
 void chaseLeftMode(int leftSpeed,int rightSpeed){
-  if (getDistance(rightSonar)>50){
+  Serial.println("Running chaseLeftMode");
+  if (getDistance(rightSonar)==0){
     leftSpeed -= 30;
     motors.setSpeeds(leftSpeed, rightSpeed);
+    chaseLeftMode(leftSpeed,rightSpeed);
   }
   else{
     chaseMode(400,400);
   }
-  if (getDistance(leftSonar)>50){
-    chaseMode(400,400);
+  if (getDistance(leftSonar)==0){
+    searchMode();
   }
   return;
 }
 
 void chaseMode(int leftSpeed,int rightSpeed){
-  if (getDistance(leftSonar)>50){
+  Serial.println("Running chaseMode");
+  if (getDistance(leftSonar)==0){
     rightSpeed -= 30;
     motors.setSpeeds(leftSpeed,rightSpeed);
     chaseRightMode(leftSpeed,rightSpeed);
   }
-  else if  (getDistance(rightSonar)>maxDistance){
+  else if  (getDistance(rightSonar)==0){
     leftSpeed -= 30;
     motors.setSpeeds(leftSpeed,rightSpeed);
     chaseLeftMode(leftSpeed,rightSpeed);
+  }
+  else{
+    chaseMode(400,400);
   }
   return;
 }
 
 long getDistance(NewPing sonar){
+  Serial.println(sonar.ping_cm());
+  delay(50);
   return sonar.ping_cm();
 }
