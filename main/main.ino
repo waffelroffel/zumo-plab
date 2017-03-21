@@ -3,13 +3,13 @@
 #include <PLabBTSerial.h>
 #include <Pushbutton.h>
 #include <NewPing.h>
+#include <ZumoReflectanceSensorArray.h>
 
 // DEFINE PINS
 #define echoPinRight 2 // Right Echo Pin
 #define trigPinRight 3 // Right Trigger Pin
 #define echoPinLeft A1 // Left Echo Pin
 #define trigPinLeft A0 // Left Trigger Pin
-
 
 // DEFINE CONSTANTS
 const int MAX_SPEED = 400;
@@ -24,6 +24,7 @@ const int MAX_SPEED = 400;
 
 // Variables for distance measurements
 ZumoMotors motors;
+ZumoReflectanceSensorArray sensors;
 NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
 NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 
@@ -50,6 +51,7 @@ void setup() {
 void loop() {
     leftDistance = getDistance(leftSonar);
     rightDistance = getDistance(rightSonar);
+    sensors.read(sensorValues);
     // **ALL** SENSOR INPUT AND CALCULATIONS
 
     // DECIDE STATE BASED ON SENSOR INPUT
@@ -102,8 +104,6 @@ void searchMode(){
 }
 
 void retreat() {
-  // global?
-  sensors.read(sensorValues);
   // if line is detected on both the leftmost and rightmost sensor, start turning around
   if ((sensorValues[0] > QTR_THRESHOLD) && (sensorValues[5] > QTR_THRESHOLD)) {
     updateSpeeds(-300, 300)
@@ -122,7 +122,7 @@ void attackMode(){
 		updateSpeeds(400,400);
 		return;
 	}
-	if 	(leftDistance>0){
+	if (leftDistance>0){
 		if (previousState == 1){
 			updateSpeeds(leftSpeed-30, 400);
 		}
