@@ -10,6 +10,7 @@
 <b>FUKSJONER: </b>
 
 void updateSpeeds(int left, int right); // setter motorkraft, og endrer globale var
+void bluetoothPrint(String message); // printer til bluetoothappen
 
 <b>GLOBALE-VARIABLER:</b>
 
