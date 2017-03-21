@@ -67,43 +67,43 @@ void getState(){
 }
 
 void evasion(int side){
-  switch(side){
-    case 1: updateSpeeds(-400,-100); break; //front
-    case 2: updateSpeeds(400,100); break; //back
-    case 3: updateSpeeds(400,400); break; //left
-    case 4: updateSpeeds(400,400); break; //right
-  }
+	switch(side){
+		case 1: updateSpeeds(-400,-100); break; //front
+		case 2: updateSpeeds(400,100); break; //back
+		case 3: updateSpeeds(400,400); break; //left
+		case 4: updateSpeeds(400,400); break; //right
+	}
 }
 
 void updateSpeeds(int newLeftSpeed, int newRightSpeed){
-  previousLeftSpeed = leftSpeed;
-  previousRightSpeed = rightSpeed;
-  leftSpeed = newLeftSpeed;
-  rightSpeed = newRightSpeed;
-  motors.setSpeeds(leftSpeed, rightSpeed);
+	previousLeftSpeed = leftSpeed;
+	previousRightSpeed = rightSpeed;
+	leftSpeed = newLeftSpeed;
+	rightSpeed = newRightSpeed;
+	motors.setSpeeds(leftSpeed, rightSpeed);
 }
 
 long getDistance(NewPing sonar){
-  //Serial.println(sonar.ping_cm());
-  return sonar.ping_cm();
+	//Serial.println(sonar.ping_cm());
+	return sonar.ping_cm();
 }
 
 void searchMode(){
-  //btSerial.println("Running searchMode");
-  updateSpeeds(400,-400);
+	//btSerial.println("Running searchMode");
+	updateSpeeds(400,-400);
 }
 
 void retreat() {
-  // if line is detected on both the leftmost and rightmost sensor, start turning around
-  if ((sensorValues[0] < QTR_THRESHOLD) && (sensorValues[5] < QTR_THRESHOLD)) {
-    updateSpeeds(-300, 300);
-  } else if (sensorValues[0] < QTR_THRESHOLD) {
-    // turn right
-    updateSpeeds(300, 200);
-  } else if (sensorValues[5] < QTR_THRESHOLD) {
-    // turn left
-    updateSpeeds(200, 300);
-  }
+	// if line is detected on both the leftmost and rightmost sensor, start turning around
+	if((sensorValues[0] < QTR_THRESHOLD) && (sensorValues[5] < QTR_THRESHOLD)){
+		updateSpeeds(-300, 300);
+	}else if(sensorValues[0] < QTR_THRESHOLD){
+		// turn right
+		updateSpeeds(300, 200);
+	}else if(sensorValues[5] < QTR_THRESHOLD) {
+		// turn left
+		updateSpeeds(200, 300);
+	}
 }
 
 void attackMode(){
@@ -132,32 +132,24 @@ void attackMode(){
 }
 
 void setup() {
-    // SETUP AND MANOUVER TO MIDDLE
-    sensors.init();
+	// SETUP AND MANOUVER TO MIDDLE
+	sensors.init();
 }
 
 void loop() {
-    leftDistance = getDistance(leftSonar);
-    rightDistance = getDistance(rightSonar);
-    sensors.read(sensorValues);
-    // **ALL** SENSOR INPUT AND CALCULATIONS
-
-    // DECIDE STATE BASED ON SENSOR INPUT
+	leftDistance = getDistance(leftSonar);
+	rightDistance = getDistance(rightSonar);
+	sensors.read(sensorValues);
+	// **ALL** SENSOR INPUT AND CALCULATIONS
+	// DECIDE STATE BASED ON SENSOR INPUT
 	getState();
-    // SWITCH-CASE
-    switch (state) {
-        case SEARCH:
-            searchMode();
-            break;
-        case ATTACK:
-            attackMode();
-            break;
-        case DEFENCE:
-            evasion(side);
-            // DEFENCE LOGIC
-            break;
-        case RETURN:
-            // RETURN LOGIC
-            break;
-    }
+	// SWITCH-CASE
+	switch (state) {
+		case SEARCH: searchMode(); break;
+		case ATTACK: attackMode(); break;
+		case DEFENCE: evasion(side); break;
+		case RETURN:
+			// RETURN LOGIC
+			break;
+	}
 }
