@@ -12,6 +12,8 @@
 #define trigPinRight 5 // Right Trigger Pin
 #define echoPinLeft A1 // Left Echo Pin
 #define trigPinLeft A0 // Left Trigger Pin
+#define txPin 7
+#define rxPin 6
 
 // DEFINE CONSTANTS
 const int MAX_SPEED = 400;
@@ -31,6 +33,7 @@ ZumoReflectanceSensorArray sensors;
 NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
 NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 LSM303 compass;
+PLabBTSerial btSerial(txPin, rxPin);
 
 // Global variables
 int state; //States of the vehicle
@@ -211,6 +214,7 @@ void setup() {
 	// SETUP
 	sensors.init();
 	compass.init();
+	btSerial.begin(9600);
 	compass.enableDefault();
 	calibrateAccel(); // calibrates accelerometer
 }
