@@ -26,6 +26,9 @@ int state;
 NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
 NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 
+// Global variables
+int rightDistance;
+int leftDistance;
 
 void setup() {
     // SETUP AND MANOUVER TO MIDDLE
@@ -36,7 +39,8 @@ void setup() {
 }
 
 void loop() {
-
+    leftDistance = getDistance(leftSonar);
+    rightDistance = getDistance(rightSonar);
     // **ALL** SENSOR INPUT AND CALCULATIONS
 
     // DECIDE STATE BASED ON SENSOR INPUT
