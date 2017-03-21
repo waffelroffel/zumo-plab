@@ -215,6 +215,7 @@ void bluetoothPrint(String message) {
 
 void setup() {
 	// SETUP
+	Wire.begin();
 	sensors.init();
 	compass.init();
 	btSerial.begin(9600);
