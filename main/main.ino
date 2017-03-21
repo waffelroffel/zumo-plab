@@ -61,7 +61,18 @@ void loop() {
 }
 
 long getDistance(NewPing sonar){
-  Serial.println(sonar.ping_cm());
+  //Serial.println(sonar.ping_cm());
   delay(50);
   return sonar.ping_cm();
+}
+
+void searchMode(){
+  //btSerial.println("Running searchMode");
+  motors.setSpeeds(400,-400);
+  if ((getDistance(leftSonar)>(maxDistance-10)) or (getDistance(leftSonar)==0)){
+    return;
+  }
+  else{
+      pass
+      //start attackMode
 }
