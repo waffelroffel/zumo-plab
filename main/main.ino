@@ -8,6 +8,7 @@
 #include <QTRSensors.h>
 #include <Wire.h>
 
+
 // DEFINE PINS
 #define echoPinRight 4 // Right Echo Pin
 #define trigPinRight 5 // Right Trigger Pin
@@ -35,6 +36,7 @@ NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
 NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 LSM303 compass;
 PLabBTSerial btSerial(txPin, rxPin);
+Pushbutton button(ZUMO_BUTTON);
 
 // Global variables
 int state; //States of the vehicle
@@ -218,6 +220,7 @@ void setup() {
 	btSerial.begin(9600);
 	compass.enableDefault();
 	calibrateAccel(); // calibrates accelerometer
+	button.waitForButton();
 }
 
 void loop() {
