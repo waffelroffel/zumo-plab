@@ -42,6 +42,7 @@ int previousLeftSpeed;
 int previousRightSpeed;
 int side; //truffet side
 unsigned int sensorValues[NUM_SENSORS]; // Array for IR-sensors
+boolean crashDetected = false;
 
 // CALIBRATED ACCALERATION
 int CALIBRATED_X = 0;
