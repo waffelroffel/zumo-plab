@@ -94,17 +94,17 @@ void getState(){
 
 void evasion(int side){
   switch(side){
-    case 1: motors.updateSpeeds(-400,-100); break; //front
-    case 2: motors.updateSpeeds(400,100); break; //back
-    case 3: motors.updateSpeeds(400,400); break; //left
-    case 4: motors.updateSpeeds(400,400); break; //right
+    case 1: updateSpeeds(-400,-100); break; //front
+    case 2: updateSpeeds(400,100); break; //back
+    case 3: updateSpeeds(400,400); break; //left
+    case 4: updateSpeeds(400,400); break; //right
   }
 }
 
 void updateSpeeds(int newLeftSpeed, int newRightSpeed){
   previousLeftSpeed = leftSpeed;
   previousRightSpeed = rightSpeed;
-  leftSpeed = newleftSpeed;
+  leftSpeed = newLeftSpeed;
   rightSpeed = newRightSpeed;
   motors.setSpeeds(leftSpeed, rightSpeed);
 }
