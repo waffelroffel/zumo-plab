@@ -15,6 +15,7 @@
 const int MAX_SPEED = 400;
 #define maxDistance 50
 #define NUM_SENSORS 6
+#define QTR_THRESHOLD 1800
 
 // DEFINE STATES
 #define SEARCH 0;
@@ -40,41 +41,6 @@ int previousRightSpeed;
 int side; //truffet side
 unsigned int sensorValues[NUM_SENSORS]; // Array for IR-sensors
 
-void setup() {
-    // SETUP AND MANOUVER TO MIDDLE
-    sensors.init();
-    motors.setSpeeds(400,120);
-    delay(750);
-    motors.setSpeeds(0,0);
-}
-
-void loop() {
-    leftDistance = getDistance(leftSonar);
-    rightDistance = getDistance(rightSonar);
-    sensors.read(sensorValues);
-    // **ALL** SENSOR INPUT AND CALCULATIONS
-
-    // DECIDE STATE BASED ON SENSOR INPUT
-	getState();
-    // SWITCH-CASE
-    switch (state) {
-        case SEARCH:
-            searchMode();
-            break;
-        case ATTACK:
-            attackMode();
-            break;
-        case DEFENCE:
-            evasion(side);
-            // DEFENCE LOGIC
-            break;
-        case RETURN:
-            // RETURN LOGIC
-            break;
-        }
-    }
-
-}
 
 void setState(int newState){
 	previousState = state;
@@ -82,7 +48,10 @@ void setState(int newState){
 }
 
 void getState(){
-	// Kode for å sjekke om vi er på kanten
+	if((sensorValues[0] < QTR_THRESHOLD) || (sensorValues[5] < QTR_THRESHOLD)){
+		setState(3);
+		stateSet = true;
+	}
 	// Kode for å sjekke om vi blir angrepet
 	if (!stateSet && (leftDistance > 0 || rightDistance > 0)){
 		setState(1);
@@ -121,13 +90,13 @@ void searchMode(){
 
 void retreat() {
   // if line is detected on both the leftmost and rightmost sensor, start turning around
-  if ((sensorValues[0] > QTR_THRESHOLD) && (sensorValues[5] > QTR_THRESHOLD)) {
+  if ((sensorValues[0] < QTR_THRESHOLD) && (sensorValues[5] < QTR_THRESHOLD)) {
     updateSpeeds(-300, 300)
     break;
-  } else if (sensorValues[0] > QTR_THRESHOLD) {
+  } else if (sensorValues[0] < QTR_THRESHOLD) {
     // turn right
     updateSpeeds(300, 200);
-  } else if (sensorValues[5] > QTR_THRESHOLD) {
+  } else if (sensorValues[5] < QTR_THRESHOLD) {
     // turn left
     updateSpeeds(200, 300);
   }
@@ -156,4 +125,39 @@ void attackMode(){
 		}
 		return;
 	}
+}
+
+void setup() {
+    // SETUP AND MANOUVER TO MIDDLE
+    sensors.init();
+    motors.setSpeeds(400,120);
+    delay(750);
+    motors.setSpeeds(0,0);
+}
+
+void loop() {
+    leftDistance = getDistance(leftSonar);
+    rightDistance = getDistance(rightSonar);
+    sensors.read(sensorValues);
+    // **ALL** SENSOR INPUT AND CALCULATIONS
+
+    // DECIDE STATE BASED ON SENSOR INPUT
+	getState();
+    // SWITCH-CASE
+    switch (state) {
+        case SEARCH:
+            searchMode();
+            break;
+        case ATTACK:
+            attackMode();
+            break;
+        case DEFENCE:
+            evasion(side);
+            // DEFENCE LOGIC
+            break;
+        case RETURN:
+            // RETURN LOGIC
+            break;
+        }
+    }
 }
