@@ -57,7 +57,7 @@ int right_motor;
 void setup()
 {
     //btSerial.begin(9600);
-    Serial.begin(9600);
+    btSerial.begin(9600);
     button.waitForButton();
     Wire.begin();
     compass.init();
@@ -75,7 +75,7 @@ void loop()
     compass.m.x, compass.m.y, compass.m.z);
 
   //btSerial.println(report);
-  Serial.println(report);
+  btSerial.println(report);
   //detectCrash(compass.a.x, compass.a.y, compass.a.z);
 
   delay(100);
@@ -88,7 +88,7 @@ void calibrateAccel() {
     CALIBRATED_Z = compass.a.z;
 }
 
-void detectCrash(int x, int y, int z) {
+void crashDetected(int x, int y, int z) {
 // I RO:
 // x = -100 (5k dytt) (10k+ 400)
 // y = -130 (5k dytt)
@@ -98,5 +98,24 @@ void detectCrash(int x, int y, int z) {
 // BAKOVER = NEGATIV X
 // HOYRE = NEGATIV Y
 // VENSTRE = POSITV Y
+
+    boolean crash_x = false;
+    boolean crash_y = false;
+
+
+    /* if (state = ATTACK) {
+        if (previousLeftSpeed == leftSpeed && previousRightSpeed == rightSpeed){
+            if ()
+        }
+    } */
+
+    // 0 accel x
+    if (x > -250 && x < 0) {
+        crash_x = false;
+    }
+    // 0 accel y
+    else if (y > -250 && y < 0) {
+        crash_y = false;
+    }
 
 }
