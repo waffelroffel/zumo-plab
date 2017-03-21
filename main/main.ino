@@ -55,7 +55,7 @@ void loop() {
     // **ALL** SENSOR INPUT AND CALCULATIONS
 
     // DECIDE STATE BASED ON SENSOR INPUT
-
+	getState();
     // SWITCH-CASE
     switch (state) {
         case SEARCH:
