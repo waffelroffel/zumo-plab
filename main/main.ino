@@ -66,7 +66,6 @@ void loop() {
 
 long getDistance(NewPing sonar){
   //Serial.println(sonar.ping_cm());
-  delay(50);
   return sonar.ping_cm();
 }
 
