@@ -32,7 +32,7 @@ NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 // Global variables
 int state; //States of the vehicle
 int previousState;
-int stateSet;
+bool stateSet;
 int leftDistance; //Distances to enemies
 int rightDistance;
 int leftSpeed; // Speeds on the wheels
