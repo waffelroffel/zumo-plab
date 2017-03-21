@@ -31,6 +31,9 @@ int leftDistance; //Distances to enemies
 int rightDistance;
 int leftSpeed; // Speeds on the wheels
 int rightSpeed;
+int previousLeftSpeed;
+int previousRightSpeed;
+int side; //truffet side
 
 void setup() {
     // SETUP AND MANOUVER TO MIDDLE
@@ -56,6 +59,7 @@ void loop() {
             // ATTACK LOGIC
             break;
         case DEFENCE:
+            evasion(side);
             // DEFENCE LOGIC
             break;
         case RETURN:
@@ -66,9 +70,20 @@ void loop() {
 
 }
 
+void evasion(int side){
+  switch(side){
+    case 1: motors.updateSpeeds(-400,-100,500,2); break; //front
+    case 2: motors.updateSpeeds(400,100,500,2); break; //back
+    case 3: motors.updateSpeeds(400,400,500,2); break; //left
+    case 4: motors.updateSpeeds(400,400,500,2); break; //right
+  }
+}
+
 void updateSpeeds(int newleftSpeed, int newRightSpeed){
-  leftSpeed = left;
-  rightSpeed = right;
+  previousLeftSpeed = leftSpeed;
+  previousRightSpeed = rightSpeed;
+  leftSpeed = newleftSpeed;
+  rightSpeed = newRightSpeed;
   motors.setSpeeds(leftSpeed, rightSpeed);
 }
 
