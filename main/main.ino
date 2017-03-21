@@ -4,6 +4,7 @@
 #include <Pushbutton.h>
 #include <NewPing.h>
 #include <ZumoReflectanceSensorArray.h>
+#include <LSM303.h>
 
 // DEFINE PINS
 #define echoPinRight 2 // Right Echo Pin
@@ -42,6 +43,10 @@ int previousRightSpeed;
 int side; //truffet side
 unsigned int sensorValues[NUM_SENSORS]; // Array for IR-sensors
 
+// CALIBRATED ACCALERATION
+int CALIBRATED_X = 0;
+int CALIBRATED_Y = 0;
+int CALIBRATED_Z = 0;
 
 void setState(int newState){
 	previousState = state;
@@ -130,19 +135,76 @@ void attackMode(){
 		return;
 	}
 }
+void calibrateAccel() {
+    // calibrate accel
+    CALIBRATED_X = compass.a.x;
+    CALIBRATED_Y = compass.a.y;
+    CALIBRATED_Z = compass.a.z;
+}
+
+void detectCrash(int x, int y, int z) {
+// I RO:
+// x = -100 (5k dytt) (10k+ 400)
+// y = -130 (5k dytt)
+// z = 17200
+
+// FREMOVER = POSITIV X
+// BAKOVER = NEGATIV X
+// HOYRE = NEGATIV Y
+// VENSTRE = POSITV Y
+
+    /* IF MOTORSPEEDS THE SAME THEN
+    Check if accel is 0 in y and x direction - if not, then set side and
+    crashDetec true
+    */
+    if (previousLeftSpeed == leftSpeed && previousRightSpeed == rightSpeed) {
+        if (state != ATTACK && leftSpeed == rightSpeed) {
+            // accel x
+            if (x < -250 || x > 0) {
+                if (x < 0) {
+                    side = 1;
+                    crashDetected = true;
+                    return;
+                } else if (x > 0) {
+                    side = 2;
+                    crashDetected = true;
+                    return;
+                }
+            }
+            // accel y
+            else if (y > -250 && y < 0) {
+                if (y < 0) {
+                    side = 4;
+                    crashDetected = true;
+                    return;
+                } else if (y > 0) {
+                    side = 3;
+                    crashDetected = true;
+                    return;
+                }
+            }
+        }
+    }
+}
 
 void setup() {
-	// SETUP AND MANOUVER TO MIDDLE
+	// SETUP
 	sensors.init();
+	compass.init();
+	compass.enableDefault();
+	calibrateAccel(); // calibrates accelerometer
 }
 
 void loop() {
+	// **ALL** SENSOR INPUT AND CALCULATIONS
 	leftDistance = getDistance(leftSonar);
 	rightDistance = getDistance(rightSonar);
 	sensors.read(sensorValues);
-	// **ALL** SENSOR INPUT AND CALCULATIONS
+	detectCrash(compass.a.x, compass.a.y, compass.a.z);
+	
 	// DECIDE STATE BASED ON SENSOR INPUT
 	getState();
+
 	// SWITCH-CASE
 	switch (state) {
 		case SEARCH: searchMode(); break;
