@@ -63,6 +63,7 @@ void getState(){
 		setState(0);
 		stateSet = true;
 	stateSet = false;
+	}
 }
 
 void evasion(int side){
