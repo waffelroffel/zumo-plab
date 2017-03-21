@@ -27,8 +27,10 @@ NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
 NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
 
 // Global variables
+int leftDistance; //Distances to enemies
 int rightDistance;
-int leftDistance;
+int leftSpeed; // Speeds on the wheels
+int rightSpeed;
 
 void setup() {
     // SETUP AND MANOUVER TO MIDDLE
