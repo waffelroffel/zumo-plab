@@ -30,6 +30,7 @@ ZumoMotors motors;
 ZumoReflectanceSensorArray sensors;
 NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
 NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
+LSM303 compass;
 
 // Global variables
 int state; //States of the vehicle
