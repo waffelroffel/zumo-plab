@@ -6,6 +6,7 @@
 #include <ZumoReflectanceSensorArray.h>
 #include <LSM303.h>
 #include <QTRSensors.h>
+#include <PLab_ZumoMotors.h>
 #include <Wire.h>
 
 
@@ -126,14 +127,15 @@ void searchMode(){
 void retreat(){
 	// if line is detected on both the leftmost and rightmost sensor, start turning around
 	if((sensorValues[0] < QTR_THRESHOLD) && (sensorValues[5] < QTR_THRESHOLD)){
-		updateSpeeds(-300, 300);
+		 turnRight(300, 180);
 	}else if(sensorValues[0] < QTR_THRESHOLD){
 		// turn right
-		updateSpeeds(300, 200);
+		turnRight(300, 90)
 	}else if(sensorValues[5] < QTR_THRESHOLD) {
 		// turn left
-		updateSpeeds(200, 300);
+		turnLeft(300, 90);
 	}
+  forward(300, 20);
 }
 
 void attackMode(){
