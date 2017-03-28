@@ -173,12 +173,13 @@ void attackMode(){
 }
 void calibrateAccel() {
     // calibrate accel
+    compass.readAcc();
     CALIBRATED_X = compass.a.x;
     CALIBRATED_Y = compass.a.y;
     CALIBRATED_Z = compass.a.z;
 }
 
-void detectCrash(int x, int y, int z) {
+void detectCrash() {
   // I RO:
   // x = -100 (5k dytt) (10k+ 400)
   // y = -130 (5k dytt)
@@ -193,7 +194,12 @@ void detectCrash(int x, int y, int z) {
   #define BACK 2
   #define LEFT 3
   #define RIGHT 4
-  compass.read();
+
+  compass.readAcc();
+  int x  = compass.a.x;
+  int y = compass.a.y;
+  int z = compass.a.z;
+
   btSerial.print("x: ");
   btSerial.print(x);
   btSerial.print(" y: ");
@@ -254,7 +260,7 @@ void setup() {
   compass.init();
   btSerial.begin(9600);
   compass.enableDefault();
-  //calibrateAccel(); // calibrates accelerometer
+  calibrateAccel(); // calibrates accelerometer
   button.waitForButton();
 }
 
@@ -267,8 +273,7 @@ void loop() {
   }
   sensors.read(sensorValues);
   //bluetoothPrintArray(sensorValues);
-  compass.read();
-  detectCrash(compass.a.x, compass.a.y, compass.a.z);
+  detectCrash();
   loopcount++; //Add one to number of loops
   // DECIDE STATE BASED ON SENSOR INPUT
   getState();
