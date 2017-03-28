@@ -88,12 +88,18 @@ void getState(){
 	}
 }
 
-void evasion(){
+void evasion() {
+
+	#define FRONT 1;
+	#define BACK 2;
+	#define LEFT 3;
+	#define RIGHT 4;
+
 	switch(side){
-		case 1: updateSpeeds(-400,-100); break; //front
-		case 2: updateSpeeds(400,100); break; //back
-		case 3: updateSpeeds(400,400); break; //left
-		case 4: updateSpeeds(400,400); break; //right
+		case FRONT: updateSpeeds(-400,-100); break; //front
+		case BACK: updateSpeeds(400,100); break; //back
+		case LEFT: updateSpeeds(400,400); break; //left
+		case RIGHT: updateSpeeds(400,400); break; //right
 	}
 }
 
@@ -171,6 +177,11 @@ void detectCrash(int x, int y, int z) {
 	// HOYRE = NEGATIV Y
 	// VENSTRE = POSITV Y
 
+	#define FRONT 1;
+	#define BACK 2;
+	#define LEFT 3;
+	#define RIGHT 4;
+
     /* IF MOTORSPEEDS THE SAME THEN
     Check if accel is 0 in y and x direction - if not, then set side and
     crashDetec true
@@ -180,11 +191,11 @@ void detectCrash(int x, int y, int z) {
             // accel x
             if (x < -250 || x > 0) {
                 if (x < 0) {
-                    side = 1;
+                    side = FRONT;
                     crashDetected = true;
                     return;
                 } else if (x > 0) {
-                    side = 2;
+                    side = BACK;
                     crashDetected = true;
                     return;
                 }
@@ -192,11 +203,11 @@ void detectCrash(int x, int y, int z) {
             // accel y
             else if (y > -250 && y < 0) {
                 if (y < 0) {
-                    side = 4;
+                    side = RIGHT;
                     crashDetected = true;
                     return;
                 } else if (y > 0) {
-                    side = 3;
+                    side = LEFT;
                     crashDetected = true;
                     return;
                 }
@@ -212,7 +223,6 @@ void bluetoothPrint(String message) {
     btSerial.print(message);
   }
 }
-
 
 void setup() {
 	// SETUP
