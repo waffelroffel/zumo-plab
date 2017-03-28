@@ -107,7 +107,8 @@ void updateSpeeds(int newLeftSpeed, int newRightSpeed){
 
 long getDistance(NewPing sonar){
 	//Serial.println(sonar.ping_cm());
-	return sonar.ping_cm();
+	//return sonar.ping_cm();
+	return sonar.convert_cm(sonar.ping_median(4));
 }
 
 void searchMode(){
