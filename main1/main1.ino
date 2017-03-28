@@ -194,8 +194,10 @@ void detectCrash(int x, int y, int z) {
   #define LEFT 3
   #define RIGHT 4
   compass.read();
-  btSerial.println("x: " + x + "\n");
-  btSerial.println("y: " + y + "\n");
+  btSerial.print("x: ");
+  btSerial.print(x);
+  btSerial.print(" y: ");
+  btSerial.println(y);
 
     /* IF MOTORSPEEDS THE SAME THEN
     Check if accel is 0 in y and x direction - if not, then set side and
