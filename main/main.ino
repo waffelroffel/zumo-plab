@@ -128,9 +128,9 @@ void retreat(){
 	// if line is detected on both the leftmost and rightmost sensor, start turning around
 	if((sensorValues[0] < QTR_THRESHOLD) && (sensorValues[5] < QTR_THRESHOLD)){
 		 turnRight(300, 180);
-	}else if(sensorValues[0] < QTR_THRESHOLD){
+	}else if(sensorValues[0] < QTR_THRESHOLD) {
 		// turn right
-		turnRight(300, 90)
+		turnRight(300, 90);
 	}else if(sensorValues[5] < QTR_THRESHOLD) {
 		// turn left
 		turnLeft(300, 90);
@@ -180,10 +180,10 @@ void detectCrash(int x, int y, int z) {
 	// HOYRE = NEGATIV Y
 	// VENSTRE = POSITV Y
 
-	#define FRONT 1;
-	#define BACK 2;
-	#define LEFT 3;
-	#define RIGHT 4;
+	#define FRONT 1
+	#define BACK 2
+	#define LEFT 3
+	#define RIGHT 4
 
     /* IF MOTORSPEEDS THE SAME THEN
     Check if accel is 0 in y and x direction - if not, then set side and
