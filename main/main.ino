@@ -6,6 +6,7 @@
 #include <ZumoReflectanceSensorArray.h>
 #include <LSM303.h>
 #include <QTRSensors.h>
+#include <PLab_ZumoMotors.h>
 #include <Wire.h>
 
 
@@ -49,6 +50,7 @@ int rightSpeed;
 int previousLeftSpeed;
 int previousRightSpeed;
 int side; //truffet side
+int loopcount; //Antaller loops
 unsigned int sensorValues[NUM_SENSORS]; // Array for IR-sensors
 boolean crashDetected = false;
 
@@ -114,7 +116,7 @@ void updateSpeeds(int newLeftSpeed, int newRightSpeed){
 long getDistance(NewPing sonar){
 	//Serial.println(sonar.ping_cm());
 	//return sonar.ping_cm();
-	return sonar.convert_cm(sonar.ping_median(4));
+	return sonar.convert_cm(sonar.ping_median(4)); //Use multiple reads and get the median (0s are not included)
 }
 
 void searchMode(){
@@ -125,14 +127,15 @@ void searchMode(){
 void retreat(){
 	// if line is detected on both the leftmost and rightmost sensor, start turning around
 	if((sensorValues[0] < QTR_THRESHOLD) && (sensorValues[5] < QTR_THRESHOLD)){
-		updateSpeeds(-300, 300);
-	}else if(sensorValues[0] < QTR_THRESHOLD){
+		 turnRight(300, 180);
+	}else if(sensorValues[0] < QTR_THRESHOLD) {
 		// turn right
-		updateSpeeds(300, 200);
+		turnRight(300, 90);
 	}else if(sensorValues[5] < QTR_THRESHOLD) {
 		// turn left
-		updateSpeeds(200, 300);
+		turnLeft(300, 90);
 	}
+  forward(300, 20);
 }
 
 void attackMode(){
@@ -177,10 +180,10 @@ void detectCrash(int x, int y, int z) {
 	// HOYRE = NEGATIV Y
 	// VENSTRE = POSITV Y
 
-	#define FRONT 1;
-	#define BACK 2;
-	#define LEFT 3;
-	#define RIGHT 4;
+	#define FRONT 1
+	#define BACK 2
+	#define LEFT 3
+	#define RIGHT 4
 
     /* IF MOTORSPEEDS THE SAME THEN
     Check if accel is 0 in y and x direction - if not, then set side and
@@ -237,11 +240,13 @@ void setup() {
 
 void loop() {
 	// **ALL** SENSOR INPUT AND CALCULATIONS
-	leftDistance = getDistance(leftSonar);
-	rightDistance = getDistance(rightSonar);
+	if (loopcount%10==0){
+		leftDistance = getDistance(leftSonar);
+		rightDistance = getDistance(rightSonar);
+	}
 	sensors.read(sensorValues);
 	detectCrash(compass.a.x, compass.a.y, compass.a.z);
-
+	loopcount++; //Add one to number of loops
 	// DECIDE STATE BASED ON SENSOR INPUT
 	getState();
 
