@@ -49,6 +49,7 @@ int rightSpeed;
 int previousLeftSpeed;
 int previousRightSpeed;
 int side; //truffet side
+int loopcount; //Antaller loops
 unsigned int sensorValues[NUM_SENSORS]; // Array for IR-sensors
 boolean crashDetected = false;
 
@@ -114,7 +115,7 @@ void updateSpeeds(int newLeftSpeed, int newRightSpeed){
 long getDistance(NewPing sonar){
 	//Serial.println(sonar.ping_cm());
 	//return sonar.ping_cm();
-	return sonar.convert_cm(sonar.ping_median(4));
+	return sonar.convert_cm(sonar.ping_median(4)); //Use multiple reads and get the median (0s are not included)
 }
 
 void searchMode(){
@@ -237,11 +238,13 @@ void setup() {
 
 void loop() {
 	// **ALL** SENSOR INPUT AND CALCULATIONS
-	leftDistance = getDistance(leftSonar);
-	rightDistance = getDistance(rightSonar);
+	if (loopcount%10==0){
+		leftDistance = getDistance(leftSonar);
+		rightDistance = getDistance(rightSonar);
+	}
 	sensors.read(sensorValues);
 	detectCrash(compass.a.x, compass.a.y, compass.a.z);
-
+	loopcount++; //Add one to number of loops
 	// DECIDE STATE BASED ON SENSOR INPUT
 	getState();
 
