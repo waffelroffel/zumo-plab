@@ -30,8 +30,11 @@ const int MAX_SPEED = 400;
 #define DEFENCE 2
 #define RETURN 3
 
+const int attackSpeed = 300;
+
 // OBJECTS
 ZumoMotors motors;
+PLab_ZumoMotors plabmotors;
 ZumoReflectanceSensorArray sensors;
 NewPing rightSonar(trigPinRight, echoPinRight, maxDistance);
 NewPing leftSonar(trigPinLeft, echoPinLeft, maxDistance);
@@ -60,107 +63,111 @@ int CALIBRATED_Y = 0;
 int CALIBRATED_Z = 0;
 
 void setState(int newState){
-	previousState = state;
-	state = newState;
+  previousState = state;
+  state = newState;
 }
 
 void getState(){
-	// Treffer linja
-	if((sensorValues[0] < QTR_THRESHOLD) || (sensorValues[5] < QTR_THRESHOLD)){
-		setState(3);
-		stateSet = true;
-	}
-	// Blir kræsjet i
-	if (!stateSet && crashDetected) {
-		setState(2);
-		stateSet = true;
-	}
+  // Treffer linja
+  if((sensorValues[1] < QTR_THRESHOLD) || (sensorValues[5] < QTR_THRESHOLD)){
+    setState(3);
+    stateSet = true;
+  }
+  // Blir kræsjet i
+  if (!stateSet && crashDetected) {
+    setState(2);
+    stateSet = true;
+  }
 
-	// Kode for å sjekke om vi blir angrepet
-	if (!stateSet && (leftDistance > 0 || rightDistance > 0)){
-		setState(1);
-		stateSet = true;
-	}
-	// Alle andre eventuelle sjekker
+  // Kode for å sjekke om vi blir angrepet
+  if (!stateSet && (leftDistance > 0 || rightDistance > 0)){
+    setState(1);
+    stateSet = true;
+  }
+  // Alle andre eventuelle sjekker
 
-	if (stateSet == false){ //Dette er siste sjekken, ikke legg noe under
-		setState(0);
-		stateSet = true;
-	stateSet = false;
-	}
+  if (stateSet == false){ //Dette er siste sjekken, ikke legg noe under
+    setState(0);
+    stateSet = true;
+  }
+  stateSet = false;
+  
 }
 
 void evasion() {
 
-	#define FRONT 1;
-	#define BACK 2;
-	#define LEFT 3;
-	#define RIGHT 4;
+  #define FRONT 1
+  #define BACK 2
+  #define LEFT 3
+  #define RIGHT 4
 
-	switch(side){
-		case FRONT: updateSpeeds(-400,-100); break; //front
-		case BACK: updateSpeeds(400,100); break; //back
-		case LEFT: updateSpeeds(400,400); break; //left
-		case RIGHT: updateSpeeds(400,400); break; //right
-	}
+  switch(side){
+    case FRONT: updateSpeeds(-400,-100); break; //front
+    case BACK: updateSpeeds(400,100); break; //back
+    case LEFT: updateSpeeds(400,400); break; //left
+    case RIGHT: updateSpeeds(400,400); break; //right
+  }
 }
 
 void updateSpeeds(int newLeftSpeed, int newRightSpeed){
-	previousLeftSpeed = leftSpeed;
-	previousRightSpeed = rightSpeed;
-	leftSpeed = newLeftSpeed;
-	rightSpeed = newRightSpeed;
-	motors.setSpeeds(leftSpeed, rightSpeed);
+  previousLeftSpeed = leftSpeed;
+  previousRightSpeed = rightSpeed;
+  leftSpeed = newLeftSpeed;
+  rightSpeed = newRightSpeed;
+  motors.setSpeeds(leftSpeed, rightSpeed);
 }
 
-long getDistance(NewPing sonar){
-	//Serial.println(sonar.ping_cm());
-	//return sonar.ping_cm();
-	return sonar.convert_cm(sonar.ping_median(4)); //Use multiple reads and get the median (0s are not included)
+int getDistance(NewPing sonar){
+  //Serial.println(sonar.ping_cm());
+  //return sonar.ping_cm();
+  return sonar.convert_cm(sonar.ping_median(4)); //Use multiple reads and get the median (0s are not included)
 }
 
 void searchMode(){
-	//btSerial.println("Running searchMode");
-	updateSpeeds(400,-400);
+  //btSerial.println("Running searchMode");
+  updateSpeeds(attackSpeed,-attackSpeed);
 }
 
 void retreat(){
-	// if line is detected on both the leftmost and rightmost sensor, start turning around
-	if((sensorValues[0] < QTR_THRESHOLD) && (sensorValues[5] < QTR_THRESHOLD)){
-		 turnRight(300, 180);
-	}else if(sensorValues[0] < QTR_THRESHOLD) {
-		// turn right
-		turnRight(300, 90);
-	}else if(sensorValues[5] < QTR_THRESHOLD) {
-		// turn left
-		turnLeft(300, 90);
-	}
-  forward(300, 20);
+  updateSpeeds(0,0);
+  plabmotors.backward(attackSpeed,20);
+  // if line is detected on both the leftmost and rightmost sensor, start turning around
+  if((sensorValues[1] < QTR_THRESHOLD) && (sensorValues[5] < QTR_THRESHOLD)){
+     plabmotors.turnRight(attackSpeed, attackSpeed*0.75);
+  }else if(sensorValues[1] < QTR_THRESHOLD) {
+    // turn right
+    plabmotors.turnRight(attackSpeed, 90);
+  }else if(sensorValues[5] < QTR_THRESHOLD) {
+    // turn left
+    plabmotors.turnLeft(attackSpeed, 90);
+  }
+  plabmotors.forward(attackSpeed, 10);
+  return;
 }
 
 void attackMode(){
-	if (leftDistance>0 && rightDistance>0){
-		updateSpeeds(400,400);
-		return;
-	}
-	if (leftDistance>0){
-		if (previousState == 1){
-			updateSpeeds(leftSpeed-30, 400);
-		}
-		else{
-			updateSpeeds(370,400);
-		}
-		return;
-	}
-	if (rightDistance>0){
-		if (previousState == 1){
-			updateSpeeds(400,rightSpeed);
-		}
-		else{
-			updateSpeeds(400,370);
-		}
-		return;
-	}
+  if (leftDistance>0 && rightDistance>0){
+    updateSpeeds(attackSpeed,attackSpeed);
+    return;
+  }
+  if (leftDistance>0){
+    if (previousState == 1){
+      updateSpeeds(leftSpeed-30, attackSpeed);
+    }
+    else{
+      updateSpeeds(attackSpeed*0.75,attackSpeed);
+    }
+    return;
+  }
+  if (rightDistance>0){
+    if (previousState == 1){
+      updateSpeeds(attackSpeed,rightSpeed - 30);
+    }
+    else{
+      updateSpeeds(attackSpeed,attackSpeed*0.75);
+    }
+    return;
+  }
 }
 void calibrateAccel() {
     // calibrate accel
@@ -170,20 +177,20 @@ void calibrateAccel() {
 }
 
 void detectCrash(int x, int y, int z) {
-	// I RO:
-	// x = -100 (5k dytt) (10k+ 400)
-	// y = -130 (5k dytt)
-	// z = 17200
+  // I RO:
+  // x = -100 (5k dytt) (10k+ 400)
+  // y = -130 (5k dytt)
+  // z = 17200
 
-	// FREMOVER = POSITIV X
-	// BAKOVER = NEGATIV X
-	// HOYRE = NEGATIV Y
-	// VENSTRE = POSITV Y
+  // FREMOVER = POSITIV X
+  // BAKOVER = NEGATIV X
+  // HOYRE = NEGATIV Y
+  // VENSTRE = POSITV Y
 
-	#define FRONT 1
-	#define BACK 2
-	#define LEFT 3
-	#define RIGHT 4
+  #define FRONT 1
+  #define BACK 2
+  #define LEFT 3
+  #define RIGHT 4
 
     /* IF MOTORSPEEDS THE SAME THEN
     Check if accel is 0 in y and x direction - if not, then set side and
@@ -219,54 +226,71 @@ void detectCrash(int x, int y, int z) {
     }
 }
 
-
+void bluetoothPrintArray(int theArray[]) {
+  for (int i = 0; i < 6; i++) {
+    btSerial.print(theArray[i]);
+    btSerial.print('\t');
+  }
+  btSerial.println();
+}
 void bluetoothPrint(String message) {
   // ikke brukt ressurser på å sende en tom melding
   if (message.length() > 0) {
-    btSerial.print(message);
+    btSerial.println(message);
   }
 }
 
 void setup() {
-	// SETUP
-	Wire.begin();
-	sensors.init();
-	compass.init();
-	btSerial.begin(9600);
-	compass.enableDefault();
-	calibrateAccel(); // calibrates accelerometer
-	button.waitForButton();
+  // SETUP
+  Wire.begin();
+  sensors.init();
+  compass.init();
+  btSerial.begin(9600);
+  compass.enableDefault();
+  //calibrateAccel(); // calibrates accelerometer
+  button.waitForButton();
 }
 
 void loop() {
-	// **ALL** SENSOR INPUT AND CALCULATIONS
-	if (loopcount%10==0){
-		leftDistance = getDistance(leftSonar);
-		rightDistance = getDistance(rightSonar);
-	}
-	sensors.read(sensorValues);
-	detectCrash(compass.a.x, compass.a.y, compass.a.z);
-	loopcount++; //Add one to number of loops
-	// DECIDE STATE BASED ON SENSOR INPUT
-	getState();
+  // **ALL** SENSOR INPUT AND CALCULATIONS
+  if (loopcount%5==0){
+    int first = millis();
+    leftDistance = getDistance(leftSonar);
+    btSerial.print("Left: ");
+    btSerial.println(leftDistance);
+    btSerial.print("Right: ");
+    btSerial.println(rightDistance);
+    rightDistance = getDistance(rightSonar);
+    int last = millis();
+    btSerial.print("First - last: ");
+    btSerial.println(last - first);
+    
+    
+  }
+  sensors.read(sensorValues);
+  //bluetoothPrintArray(sensorValues);
+  detectCrash(compass.a.x, compass.a.y, compass.a.z);
+  loopcount++; //Add one to number of loops
+  // DECIDE STATE BASED ON SENSOR INPUT
+  getState();
 
-	// SWITCH-CASE
-	switch (state) {
-		case SEARCH:
-			bluetoothPrint("set searchMode");
-			searchMode();
-			break;
-		case ATTACK:
-			bluetoothPrint("set attackMode");
-			attackMode();
-			break;
-		case DEFENCE:
-			bluetoothPrint("set Defence");
-			evasion();
-			break;
-		case RETURN:
-			bluetoothPrint("set Retreat");
-			retreat();
-			break;
-	}
+  // SWITCH-CASE
+  switch (state) {
+    case SEARCH:
+      //bluetoothPrint("searchMode\n");
+      searchMode();
+      break;
+    case ATTACK:
+     // bluetoothPrint("attackMode\n");
+      attackMode();
+      break;
+    case DEFENCE:
+      //bluetoothPrint("Defence\n");
+      evasion();
+      break;
+    case RETURN:
+      //bluetoothPrint("Retreat\n");
+      retreat();
+      break;
+  }
 }
