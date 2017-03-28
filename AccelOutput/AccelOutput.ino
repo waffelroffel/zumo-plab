@@ -76,6 +76,8 @@ int side; //truffet side
 unsigned int sensorValues[NUM_SENSORS]; // Array for IR-sensors
 boolean stateSet;
 
+boolean crashDetected = false;
+
 ZumoReflectanceSensorArray sensors;
 
 const int txPin = 7;
@@ -107,7 +109,7 @@ void setup()
     compass.init();
     compass.enableDefault();
     //calibrateAccel();
-    updateSpeeds(400,400);
+    //updateSpeeds(400,400);
 
 }
 
@@ -120,7 +122,7 @@ void loop()
   snprintf(report, sizeof(report), "A: %6d %6d %6d",
     compass.a.x, compass.a.y, compass.a.z);
 
-    getState();
+    //getState();
 
     switch (state) {
         case SEARCH:
@@ -158,7 +160,7 @@ void setState(int newState){
 	state = newState;
 }
 
-void crashDetected(int x, int y, int z) {
+void detectCrash(int x, int y, int z) {
 // I RO:
 // x = -100 (5k dytt) (10k+ 400)
 // y = -130 (5k dytt)
@@ -169,25 +171,38 @@ void crashDetected(int x, int y, int z) {
 // HOYRE = NEGATIV Y
 // VENSTRE = POSITV Y
 
-    boolean crash_x = false;
-    boolean crash_y = false;
-
-
-    /* if (state = ATTACK) {
-        if (previousLeftSpeed == leftSpeed && previousRightSpeed == rightSpeed){
-            if ()
+    /* IF MOTORSPEEDS THE SAME THEN
+    Check if accel is 0 in y and x direction - if not, then set side and
+    crashDetec true
+    */
+    if (previousLeftSpeed == leftSpeed && previousRightSpeed == rightSpeed) {
+        if (state != ATTACK && leftSpeed == rightSpeed) {
+            // accel x
+            if (x < -250 || x > 0) {
+                if (x < 0) {
+                    side = 1;
+                    crashDetected = true;
+                    return;
+                } else if (x > 0) {
+                    side = 2;
+                    crashDetected = true;
+                    return;
+                }
+            }
+            // accel y
+            else if (y > -250 && y < 0) {
+                if (y < 0) {
+                    side = 4;
+                    crashDetected = true;
+                    return;
+                } else if (y > 0) {
+                    side = 3;
+                    crashDetected = true;
+                    return;
+                }
+            }
         }
-    } */
-
-    // 0 accel x
-    if (x > -250 && x < 0) {
-        crash_x = false;
     }
-    // 0 accel y
-    else if (y > -250 && y < 0) {
-        crash_y = false;
-    }
-
 }
 
 void updateSpeeds(int newLeftSpeed, int newRightSpeed){

@@ -9,26 +9,21 @@ const int rxPin = 6;
 ZumoMotors motors;
 Pushbutton button(ZUMO_BUTTON);
 
-
-
 PLabBTSerial btSerial(txPin, rxPin);
 
 void setup() {
   // put your setup code here, to run once:
   btSerial.begin(9600);
   button.waitForButton();
-  
+
 }
 
 void loop() {
-
-}
-
-
-void bluetoothPrint(String message) {
-  // ikke brukt ressurser på å sende en tom melding
-  if (message.length() > 0) {
-    btSerial.print(message);
+  // put your main code here, to run repeatedly:
+  int i = 0;
+  while (i < 10000) {
+    btSerial.println(i);
+    i = i + 1;
   }
-}
 
+}
