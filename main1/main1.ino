@@ -75,10 +75,10 @@ void getState(){
     stateSet = true;
   }
   // Blir kræsjet i
-  if (!stateSet && crashDetected) {
+  /*if (!stateSet && crashDetected) {
     setState(DEFENCE);
     stateSet = true;
-  }
+  }*/
 
   // Kode for å sjekke om vi blir angrepet
   if (!stateSet && (leftDistance > 0 || rightDistance > 0)){
@@ -273,7 +273,7 @@ void loop() {
   }
   sensors.read(sensorValues);
   //bluetoothPrintArray(sensorValues);
-  detectCrash();
+  //detectCrash();
   loopcount++; //Add one to number of loops
   // DECIDE STATE BASED ON SENSOR INPUT
   getState();
@@ -288,10 +288,10 @@ void loop() {
      bluetoothPrint("attackMode\n");
       attackMode();
       break;
-    case DEFENCE:
+    /*case DEFENCE:
       bluetoothPrint("Defence\n");
       evasion();
-      break;
+      break;*/
     case RETURN:
       bluetoothPrint("Retreat\n");
       retreat();
