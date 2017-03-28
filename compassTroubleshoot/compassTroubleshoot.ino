@@ -30,7 +30,6 @@ at this FS setting, so the value of -1009 corresponds to -1009 * 1 =
 #include <LSM303.h>
 
 LSM303 compass;
-
 char report[80];
 
 void setup()
