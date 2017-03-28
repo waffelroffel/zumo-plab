@@ -71,24 +71,24 @@ void setState(int newState){
 void getState(){
   // Treffer linja
   if((sensorValues[1] < QTR_THRESHOLD) || (sensorValues[5] < QTR_THRESHOLD)){
-    setState(3);
+    setState(RETURN);
     stateSet = true;
   }
   // Blir kræsjet i
   if (!stateSet && crashDetected) {
-    setState(2);
+    setState(DEFENCE);
     stateSet = true;
   }
 
   // Kode for å sjekke om vi blir angrepet
   if (!stateSet && (leftDistance > 0 || rightDistance > 0)){
-    setState(1);
+    setState(ATTACK);
     stateSet = true;
   }
   // Alle andre eventuelle sjekker
 
   if (stateSet == false){ //Dette er siste sjekken, ikke legg noe under
-    setState(0);
+    setState(SEARCH);
     stateSet = true;
   }
   stateSet = false;
@@ -193,9 +193,9 @@ void detectCrash(int x, int y, int z) {
   #define BACK 2
   #define LEFT 3
   #define RIGHT 4
-  bluetoothPrint("x: " + x\n);
-  bluetoothPrint("y: " + y\n);
-
+  compass.read();
+  btSerial.println("x: " + x + "\n");
+  btSerial.println("y: " + y + "\n");
 
     /* IF MOTORSPEEDS THE SAME THEN
     Check if accel is 0 in y and x direction - if not, then set side and
@@ -265,6 +265,7 @@ void loop() {
   }
   sensors.read(sensorValues);
   //bluetoothPrintArray(sensorValues);
+  compass.read();
   detectCrash(compass.a.x, compass.a.y, compass.a.z);
   loopcount++; //Add one to number of loops
   // DECIDE STATE BASED ON SENSOR INPUT
