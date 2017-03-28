@@ -92,7 +92,7 @@ void getState(){
     stateSet = true;
   }
   stateSet = false;
-  
+
 }
 
 void evasion() {
@@ -193,6 +193,9 @@ void detectCrash(int x, int y, int z) {
   #define BACK 2
   #define LEFT 3
   #define RIGHT 4
+  bluetoothPrint("x: " + x\n);
+  bluetoothPrint("y: " + y\n);
+
 
     /* IF MOTORSPEEDS THE SAME THEN
     Check if accel is 0 in y and x direction - if not, then set side and
@@ -258,7 +261,7 @@ void loop() {
   if (loopcount%5==0){
     leftDistance = getDistance(leftSonar);
     rightDistance = getDistance(rightSonar);
-   
+
   }
   sensors.read(sensorValues);
   //bluetoothPrintArray(sensorValues);
