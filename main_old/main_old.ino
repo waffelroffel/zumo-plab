@@ -9,6 +9,7 @@
 #include <PLab_ZumoMotors.h>
 #include <Wire.h>
 
+
 // DEFINE PINS
 #define echoPinRight 4 // Right Echo Pin
 #define trigPinRight 5 // Right Trigger Pin
@@ -29,8 +30,7 @@ const int MAX_SPEED = 400;
 #define DEFENCE 2
 #define RETURN 3
 
-const int attackSpeed = 400;
-const int spinSpeed = 200;
+const int attackSpeed = 300;
 
 // OBJECTS
 ZumoMotors motors;
@@ -68,30 +68,56 @@ void setState(int newState){
 }
 
 void getState(){
+<<<<<<< HEAD
+	// Treffer linja
+	if((sensorValues[0] < QTR_THRESHOLD) || (sensorValues[5] < QTR_THRESHOLD)){
+		setState(RETURN);
+		stateSet = true;
+	}
+	// Blir kræsjet i
+	if (!stateSet && crashDetected) {
+		setState(DEFENCE);
+		stateSet = true;
+	}
+
+	// Kode for å sjekke om vi blir angrepet
+	if (!stateSet && (leftDistance > 0 || rightDistance > 0)){
+		setState(ATTACK);
+		stateSet = true;
+	}
+	// Alle andre eventuelle sjekker
+
+	if (stateSet == false){ //Dette er siste sjekken, ikke legg noe under
+		setState(SEARCH);
+		stateSet = true;
+	stateSet = false;
+	}
+=======
   // Treffer linja
   if((sensorValues[1] < QTR_THRESHOLD) || (sensorValues[5] < QTR_THRESHOLD)){
-    setState(RETURN);
+    setState(3);
     stateSet = true;
   }
   // Blir kræsjet i
-  /*if (!stateSet && crashDetected) {
-    setState(DEFENCE);
+  if (!stateSet && crashDetected) {
+    setState(2);
     stateSet = true;
-  }*/
+  }
 
   // Kode for å sjekke om vi blir angrepet
   if (!stateSet && (leftDistance > 0 || rightDistance > 0)){
-    setState(ATTACK);
+    setState(1);
     stateSet = true;
   }
   // Alle andre eventuelle sjekker
 
   if (stateSet == false){ //Dette er siste sjekken, ikke legg noe under
-    setState(SEARCH);
+    setState(0);
     stateSet = true;
   }
   stateSet = false;
-
+  
+>>>>>>> d5b3a6310c4d7039b38f61c469a1bf058cfaa90b
 }
 
 void evasion() {
@@ -120,12 +146,12 @@ void updateSpeeds(int newLeftSpeed, int newRightSpeed){
 int getDistance(NewPing sonar){
   //Serial.println(sonar.ping_cm());
   //return sonar.ping_cm();
-  return sonar.ping_cm(); //Use multiple reads and get the median (0s are not included)
+  return sonar.convert_cm(sonar.ping_median(4)); //Use multiple reads and get the median (0s are not included)
 }
 
 void searchMode(){
   //btSerial.println("Running searchMode");
-  updateSpeeds(spinSpeed,-spinSpeed);
+  updateSpeeds(attackSpeed,-attackSpeed);
 }
 
 void retreat(){
@@ -146,7 +172,6 @@ void retreat(){
 }
 
 void attackMode(){
-  //updateSpeeds(attackSpeed,attackSpeed);
   if (leftDistance>0 && rightDistance>0){
     updateSpeeds(attackSpeed,attackSpeed);
     return;
@@ -172,13 +197,12 @@ void attackMode(){
 }
 void calibrateAccel() {
     // calibrate accel
-    compass.readAcc();
     CALIBRATED_X = compass.a.x;
     CALIBRATED_Y = compass.a.y;
     CALIBRATED_Z = compass.a.z;
 }
 
-void detectCrash() {
+void detectCrash(int x, int y, int z) {
   // I RO:
   // x = -100 (5k dytt) (10k+ 400)
   // y = -130 (5k dytt)
@@ -193,16 +217,6 @@ void detectCrash() {
   #define BACK 2
   #define LEFT 3
   #define RIGHT 4
-
-  compass.readAcc();
-  int x  = compass.a.x;
-  int y = compass.a.y;
-  int z = compass.a.z;
-
-  btSerial.print("x: ");
-  btSerial.print(x);
-  btSerial.print(" y: ");
-  btSerial.println(y);
 
     /* IF MOTORSPEEDS THE SAME THEN
     Check if accel is 0 in y and x direction - if not, then set side and
@@ -259,20 +273,29 @@ void setup() {
   compass.init();
   btSerial.begin(9600);
   compass.enableDefault();
-  calibrateAccel(); // calibrates accelerometer
+  //calibrateAccel(); // calibrates accelerometer
   button.waitForButton();
 }
 
 void loop() {
   // **ALL** SENSOR INPUT AND CALCULATIONS
   if (loopcount%5==0){
+    int first = millis();
     leftDistance = getDistance(leftSonar);
+    btSerial.print("Left: ");
+    btSerial.println(leftDistance);
+    btSerial.print("Right: ");
+    btSerial.println(rightDistance);
     rightDistance = getDistance(rightSonar);
-
+    int last = millis();
+    btSerial.print("First - last: ");
+    btSerial.println(last - first);
+    
+    
   }
   sensors.read(sensorValues);
   //bluetoothPrintArray(sensorValues);
-  //detectCrash();
+  detectCrash(compass.a.x, compass.a.y, compass.a.z);
   loopcount++; //Add one to number of loops
   // DECIDE STATE BASED ON SENSOR INPUT
   getState();
@@ -280,19 +303,19 @@ void loop() {
   // SWITCH-CASE
   switch (state) {
     case SEARCH:
-      bluetoothPrint("searchMode\n");
+      //bluetoothPrint("searchMode\n");
       searchMode();
       break;
     case ATTACK:
-     bluetoothPrint("attackMode\n");
+     // bluetoothPrint("attackMode\n");
       attackMode();
       break;
-    /*case DEFENCE:
-      bluetoothPrint("Defence\n");
+    case DEFENCE:
+      //bluetoothPrint("Defence\n");
       evasion();
-      break;*/
+      break;
     case RETURN:
-      bluetoothPrint("Retreat\n");
+      //bluetoothPrint("Retreat\n");
       retreat();
       break;
   }
