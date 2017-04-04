@@ -1,0 +1,21 @@
+Fordeling:
+
+Håkon:
+ - Bluetooth of JavaFX
+ - Programstruktur
+
+Jia Qi:
+ - Linje-deteksjon
+ - Manuvrering
+
+Vegar:
+ - Kræsj-deteksjon
+ - Programstruktur
+
+Olaf:
+ - Linje-deteksjon
+ - Manuvrering & oppstart
+
+Jørgen:
+ - Angreps-funksjon
+ - Programstruktur
