@@ -9,7 +9,6 @@
 #include <PLab_ZumoMotors.h>
 #include <Wire.h>
 
-
 // DEFINE PINS
 #define echoPinRight 4 // Right Echo Pin
 #define trigPinRight 5 // Right Trigger Pin
